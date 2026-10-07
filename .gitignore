@@ -1,0 +1,10 @@
+.lake/
+/build/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.olean
+*.ilean
+*.c
+*.o
+/benchmark-out/
