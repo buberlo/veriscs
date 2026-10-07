@@ -1,0 +1,36 @@
+VeriSCS
+Copyright 2026 VeriSCS contributors
+
+This project includes source from the public repository
+https://github.com/openai/math
+at commit adc7f1241b42e322a6451854ab7e4b4c146bf78a
+(the initial commit, 2026-10-06), licensed under the Apache License,
+Version 2.0. A copy of that license is in the file LICENSE.
+
+Unmodified files taken from that commit:
+
+  OAI/Computability/Superstring/*.lean
+      51 files, 20361 lines. The import closure of
+      OAI.Computability.Superstring.Main. Upstream path:
+      lean/OAI/Computability/Superstring/
+  vendor/comparator/Superstring.lean
+      Upstream path: lean/ComparatorChallenges/Superstring.lean
+  vendor/comparator/Superstring.json
+      Upstream path: lean/ComparatorChallenges/Superstring.json
+  vendor/comparator/scope-128.md
+      Upstream path: lean/docs/128.md
+
+Modifications to those files: none.
+
+The Lake build depends on mathlib at commit
+d13f23b723b8a846827a245b89c10fc7d3f11612, the pin recorded in
+lean/lake-manifest.json of the same upstream commit. mathlib and its
+transitive dependencies are fetched by Lake and are covered by their own
+licenses (mathlib is Apache-2.0). They are not vendored in this repository.
+
+The executable, the checker, the benchmark, and the documentation under
+this repository, other than the files listed above, were written for VeriSCS.
+
+The upstream repository name and URL are used to identify the source of
+the vendored files. They are not a product name, and this project is not
+affiliated with or endorsed by the authors of that repository.
