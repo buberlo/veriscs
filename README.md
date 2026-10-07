@@ -32,21 +32,32 @@ The machine-checked statement is about the Lean function, not about this reposit
 
 The Lean package does not fetch the rest of openai/math. `OAI.Computability.Superstring.Main` imports only modules under `OAI.Computability.Superstring`, and the root of that chain is `import Mathlib`.
 
-## Build
+## Build, check, and benchmark locally
+
+There is no GitHub Actions workflow. The [Makefile](Makefile) is the local entry point. [elan](https://github.com/leanprover/elan) must be on `PATH` (`~/.elan/bin`).
 
 ```sh
-lake update          # clones mathlib at the pinned commit; mathlib's hook downloads the olean cache
-lake exe cache get   # safe to repeat
+make deps      # once: clone pinned mathlib; its hook downloads the olean cache
+make build     # .lake/build/bin/veriscs
+make axioms    # #print axioms for answer_spec and answer_implementation
+make test      # Python unit tests; does not need the Lean binary
+make check     # veriscs on tests/instances, then tools/checker.py
+make bench     # runtime, memory, greedy, and exact optimum; writes BENCHMARK.md
+```
+
+The same steps without Make:
+
+```sh
+lake update
+lake exe cache get
 lake build veriscs
-```
-
-`lake build veriscs` elaborates the proof and produces `.lake/build/bin/veriscs`. Because `Model.lean` imports all of Mathlib, the native executable also compiles the C code of that import closure. The olean cache does not include those object files. Build time and peak memory from the run that produced this revision are in [BUILD.md](BUILD.md).
-
-Axiom listing, after the oleans exist:
-
-```sh
 lake env lean VeriSCS/Axioms.lean
+python3 tools/test_scs.py
+.lake/build/bin/veriscs --stats tests/instances/ab_bc.txt | python3 tools/checker.py tests/instances/ab_bc.txt -
+python3 tools/benchmark.py --bin .lake/build/bin/veriscs --timeout 30 --out BENCHMARK.md
 ```
+
+`make build` elaborates the proof and links a native executable. Because `Model.lean` imports all of Mathlib, that link also compiles the C code of the Mathlib import closure. The olean cache does not include those object files, so the first native build is the long step. Time and peak memory from the run that produced this revision are in [BUILD.md](BUILD.md).
 
 ## Quick start
 
@@ -120,12 +131,6 @@ Read [TRUST.md](TRUST.md). Short version:
 - It is not a fast superstring tool. The Lean function is written with lists and nested scans. Polynomial time is not a claim about practical speed. The benchmark is where that shows up.
 - It is not a reimplementation. A port to another language would not inherit the Lean proof.
 - The name and URL of the upstream repository identify the source of the vendored files. This project is not a product of that repository's authors and is not endorsed by them.
-
-## Continuous integration
-
-[`.github/workflows/ci.yml`](.github/workflows/ci.yml) runs the Python tests on every push. A second job installs Lean, restores `.lake` from cache, builds `veriscs`, prints axioms, and runs the checker on `tests/instances/one.txt` and `tests/instances/ab_bc.txt`.
-
-That Lean job compiles the Mathlib import closure to native code on a cold cache. [BUILD.md](BUILD.md) records how long that took here. If a hosted runner cannot finish it, the Python job is the part that still runs. Do not treat a green Python job as a Lean build.
 
 ## License
 
