@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="168" viewBox="0 0 760 168" role="img" aria-labelledby="title desc">
+  <title id="title">veriscs on tests/instances/ab_ba.txt</title>
+  <desc id="desc">Terminal capture from 2026-10-07. The command exited 0. Standard error is "symbols: 3" and standard output is "bab".</desc>
+  <rect width="760" height="168" rx="8" fill="#1c1c1c"/>
+  <rect width="760" height="28" rx="8" fill="#2a2a2a"/>
+  <rect y="14" width="760" height="14" fill="#2a2a2a"/>
+  <circle cx="16" cy="14" r="5" fill="#5a5a5a"/>
+  <circle cx="32" cy="14" r="5" fill="#5a5a5a"/>
+  <circle cx="48" cy="14" r="5" fill="#5a5a5a"/>
+  <text x="16" y="64" fill="#d0d0d0" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">$ .lake/build/bin/veriscs --stats tests/instances/ab_ba.txt</text>
+  <text x="16" y="96" fill="#9ecbff" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">symbols: 3</text>
+  <text x="16" y="128" fill="#d0d0d0" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace" font-size="15">bab</text>
+</svg>

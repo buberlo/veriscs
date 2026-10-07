@@ -1,0 +1,32 @@
+name: Specification review
+description: Notes on whether the Lean definitions match the classical shortest-common-superstring problem.
+title: "spec: "
+labels:
+  - good first issue
+body:
+  - type: textarea
+    id: definition
+    attributes:
+      label: Definition
+      description: >
+        Which definition you read (IsCommonSuperstring, opt, the codec, or
+        the Comparator statement) and the file and line.
+    validations:
+      required: true
+  - type: textarea
+    id: reading
+    attributes:
+      label: Reading
+      description: >
+        What a classical statement of the problem says, and where your reading
+        agrees or diverges. Quote the Lean definition. Do not treat agreement
+        as a formal proof.
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources
+      description: Papers or textbooks you compared against, with a link or DOI.
+    validations:
+      required: false

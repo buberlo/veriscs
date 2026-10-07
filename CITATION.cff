@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: If you use VeriSCS, please cite it using this metadata.
+title: "VeriSCS: an executable reference for a machine-checked factor-2 shortest common superstring"
+type: software
+authors:
+  - family-names: Kern
+    given-names: Konrad
+    alias: buberlo
+repository-code: "https://github.com/buberlo/veriscs"
+url: "https://github.com/buberlo/veriscs"
+license: Apache-2.0
+date-released: 2026-10-07
+abstract: >-
+  VeriSCS runs the Lean function OAI.Superstring.answer from the public
+  openai/math repository and prints a common superstring. The vendored proof
+  states that the result is a common superstring of length at most twice the
+  optimum and that the function has a polynomial-time Turing-machine
+  implementation. The native binary, the text codec, and the Python checker
+  are outside that proof.
