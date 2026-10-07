@@ -24,6 +24,11 @@ lean_lib OAI where
 lean_lib VeriSCS where
   globs := #[`VeriSCS.+]
 
+/-- Unmodified existential challenge. Not a default target.
+The file is a symlink to `vendor/comparator/Superstring.lean`. -/
+lean_lib ComparatorChallenges where
+  roots := #[`ComparatorChallenges.Superstring]
+
 /-- Text interface around `OAI.Superstring.answer`. -/
 @[default_target]
 lean_exe veriscs where

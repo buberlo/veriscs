@@ -21,6 +21,8 @@ The machine-checked statement is about the Lean function, not about this reposit
 | `tools/scs.py` | Greedy merge and exact dynamic programming |
 | `tools/benchmark.py` | Runtime, memory, and ratio measurements |
 | `vendor/comparator/` | Unmodified Comparator challenge and scope note |
+| `ComparatorChallenges/Superstring.lean` | Symlink to that challenge, so Lake can build the module |
+| `docs/comparator-superstring.log` | Comparator transcript from this revision |
 
 `NOTICE` lists the upstream commit and states that those files were not modified. Checksums are in `vendor/SHA256SUMS`.
 
@@ -110,11 +112,25 @@ The checker only tests contiguous containment and reports length. It does not kn
 
 ## Measured runs
 
-The numbers below are copied from the benchmark run recorded in [BENCHMARK.md](BENCHMARK.md). They are not extrapolated. If a cell is missing here, that run did not produce it.
+`make bench` wrote [BENCHMARK.md](BENCHMARK.md) with a 30 second limit per call. Every finished output covered its inputs (`tools/checker.py`). On every row, including the timeout, the greedy merge matched the exact dynamic program. The verified executable was longer than that optimum on several rows. On every row it finished, the length was at most twice the optimum. The largest ratio in the table is 1.667 (`pair_L5`, `pair_L8`).
 
-<!-- BENCHMARK-TABLE:START -->
-Benchmark results are filled in after `tools/benchmark.py` runs against the built executable. Until that file exists, there are no measured times.
-<!-- BENCHMARK-TABLE:END -->
+Two strings, one of length 8 (`pair_L8`, inputs `abababab` and `babababa`), took 28.1 seconds and 88,064 KiB. Five strings of length 3 (`words_5`: `xay` … `xey`) did not finish in 30 seconds; resident set at the kill was 87,624 KiB. Time grows much faster than the input length, while the process stayed near 90 MiB. Past a handful of short strings, or two strings of length about 8, this binary is already too slow for interactive use. The 30 second cutoff is the measurement, not a fitted curve.
+
+| instance | n | max len | veriscs len | sec | RSS KiB | opt | veriscs/opt |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| `ab_bc` | 2 | 2 | 4 | 0.152 | 87924 | 3 | 1.333 |
+| `ab_ba` | 2 | 2 | 3 | 0.102 | 87284 | 3 | 1.000 |
+| `chain3` | 3 | 3 | 6 | 0.959 | 87960 | 5 | 1.200 |
+| `pair_L4` | 2 | 4 | 7 | 0.555 | 87748 | 5 | 1.400 |
+| `pair_L6` | 2 | 6 | 11 | 4.841 | 87496 | 7 | 1.571 |
+| `pair_L8` | 2 | 8 | 15 | 28.145 | 88064 | 9 | 1.667 |
+| `words_3` | 3 | 3 | 12 | 4.940 | 87704 | 9 | 1.333 |
+| `words_4` | 4 | 3 | 16 | 19.657 | 87328 | 12 | 1.333 |
+| `words_5` | 5 | 3 | — | 30.065 | 87624 | 15 | timeout |
+
+The full table, including the one-symbol and distinct-letter rows that finished in well under a second, is [BENCHMARK.md](BENCHMARK.md).
+
+`ab_bc` prints `abcc`. That contains `ab` and `bc`. The optimum `abc` has length 3, so the verified result is valid and not optimal. `ab_ba` prints `bab`, which matches the optimum length 3.
 
 ## Trust model
 
@@ -122,7 +138,9 @@ Read [TRUST.md](TRUST.md). Short version:
 
 - `answer_spec` is a Lean theorem about `answer`, which is defined as `Executable.solve`.
 - The Comparator challenge file states `∃ f, …` and ends in `sorry`. A Comparator run would not, by itself, say that the witness is `Executable.solve`. The `#print axioms` output is what ties the theorems to that definition.
-- The vendored sources contain no `sorry`, `axiom`, `unsafe`, `implemented_by`, or `extern`.
+- The vendored solution sources contain no `sorry`, `axiom`, `unsafe`, `implemented_by`, or `extern`. The challenge file does contain `sorry`; that is the statement to be checked, and Comparator reported it.
+- `#print axioms` on `answer`, `answer_spec`, `answer_implementation`, and `main` lists `propext`, `Classical.choice`, and `Quot.sound`, including on the definition `answer` itself. Those are the three axioms the challenge allows.
+- Comparator printed `Your solution is okay!` for the existential theorem. The run used `fake-landrun.sh` because this kernel has no landlock listing. Details and the tool commits are in [TRUST.md](TRUST.md).
 - The Lean compiler and the runtime are not verified. A successful `#print axioms` does not make the native binary a verified compiler artifact.
 - Whether `IsCommonSuperstring` and `opt` are the problem you care about is a reading of the definitions in `Model.lean`. They are the standard contiguous-substring problem, with length counted in symbols. That reading is not a Lean theorem.
 

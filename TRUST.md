@@ -83,7 +83,7 @@ theorem main : ∃ f : Instance → Word,
 
 The witness is existential. A Comparator acceptance of this challenge would show that the solution module proves that same existential statement, under the permitted axioms. It would not, by itself, record that the witness is `Executable.solve`. `answer`, `answer_spec`, and `answer_implementation` are what name the function. `#print axioms` on those theorems is the check that connects them.
 
-Comparator was not run in the build recorded by this revision. The reason is in the section "Comparator" below, filled in after the attempt.
+The run that was actually performed, and the ways it differs from a landlock-sandboxed upstream run, are in the section "Comparator" below.
 
 ## Axiom check
 
@@ -99,10 +99,19 @@ Comparator was not run in the build recorded by this revision. The reason is in 
 The command and the compiler output from this revision:
 
 <!-- AXIOM-OUTPUT:START -->
-Not yet recorded. This section is replaced by the output of `lake env lean VeriSCS/Axioms.lean` after that command succeeds.
+Command: `lake env lean VeriSCS/Axioms.lean` (Lean v4.34.1). Exit status 0.
+
+```
+'OAI.Superstring.answer_spec' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OAI.Superstring.answer_implementation' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OAI.Superstring.main' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OAI.Superstring.answer' depends on axioms: [propext, Classical.choice, Quot.sound]
+```
 <!-- AXIOM-OUTPUT:END -->
 
-The upstream challenge allows `propext`, `Quot.sound`, and `Classical.choice`. Anything else in the output above is outside that list. `sorry` or `Classical.choice` appearing on `answer` itself would mean the executable definition depends on an axiom; that is a different fact from the proofs of `answer_spec` using classical reasoning about `opt`.
+Those three axioms are the permitted list in `vendor/comparator/Superstring.json`. No other axiom appears. `sorry` does not appear.
+
+`answer` is the definition `Executable.solve`, and `#print axioms` still lists `Classical.choice` on it. The kernel term of the definition uses those axioms (proof subterms and classical instances are part of the term the axiom checker sees). The same definition compiled to `.lake/build/bin/veriscs` and ran. Axiom dependence of the definition and successful native execution are both true.
 
 ## Execution path
 
@@ -130,5 +139,17 @@ The search does not inspect Mathlib. Mathlib contains `extern` and `implemented_
 ## Comparator
 
 <!-- COMPARATOR:START -->
-Not yet attempted in this revision.
+A Comparator run completed and printed `Your solution is okay!`. The log is [docs/comparator-superstring.log](docs/comparator-superstring.log). Read the limits before treating that line as the upstream procedure.
+
+What ran:
+
+- Challenge module `ComparatorChallenges.Superstring`, a symlink to the unmodified `vendor/comparator/Superstring.lean`. Building it warned `declaration uses sorry` at the challenge's `sorry`. That warning is the challenge file, not the solution.
+- Solution module `OAI.Computability.Superstring.Main`.
+- Config `vendor/comparator/Superstring.json` (`enable_nanoda: false`).
+- `lean4export` commit `05d43a2bc773b40ecfdebb32294192a5ef756951` and `comparator` commit `ca04cfc72b550331658ec314bf47685281bfd4bf`. Both commits are the ones that bump those repositories to Lean v4.35.0-rc4. They were compiled here with `lean-toolchain` overridden to `leanprover/lean4:v4.34.1`, the toolchain of this project. There is no v4.34.1 tag of either tool. The v4.34 line stops at v4.34.0.
+- Sandbox: `scripts/fake-landrun.sh` from that comparator checkout. The script prints `THIS IS NOT REAL LANDRUN` and runs the command with no landlock sandbox. `/proc/filesystems` on this machine does not list `landlock`, and `landrun` was not installed. `enable_nanoda` stayed false, so only the builtin Lean kernel checked the export.
+
+The log records `Lean default kernel accepts the solution` and then `Your solution is okay!`.
+
+That acceptance is about the existential theorem `OAI.Superstring.main`. It does not, by itself, record that the witness is `Executable.solve`. The `#print axioms` output above is the check that names `answer`.
 <!-- COMPARATOR:END -->
