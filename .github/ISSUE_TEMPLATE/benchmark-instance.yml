@@ -1,0 +1,32 @@
+name: Benchmark instance
+description: Add or correct a measured instance. Include the real command output.
+title: "bench: "
+labels:
+  - good first issue
+body:
+  - type: textarea
+    id: instance
+    attributes:
+      label: Instance
+      description: One string per line, exactly as the executable should read it.
+    validations:
+      required: true
+  - type: textarea
+    id: measurement
+    attributes:
+      label: Measurement
+      description: >
+        Command, exit status, stdout, stderr, wall time, and how memory was
+        sampled. If the run timed out, give the limit and the resident set at
+        the kill. Leave unknown cells blank.
+    validations:
+      required: true
+  - type: textarea
+    id: baselines
+    attributes:
+      label: Checker, greedy, and exact optimum
+      description: >
+        Output of tools/checker.py, and the greedy and exact lengths from
+        tools/scs.py when they finish. Say if exact search was refused.
+    validations:
+      required: false

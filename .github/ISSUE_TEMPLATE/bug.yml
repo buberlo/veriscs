@@ -1,0 +1,29 @@
+name: Bug report
+description: A wrong superstring, a failed build, or a mismatch with the documented trust model.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: Command, input, exit status, and the output you got.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: >
+        Containment, length, or a documented guarantee. Name the file
+        (TRUST.md, the checker, or a benchmark row) you are comparing with.
+    validations:
+      required: true
+  - type: input
+    id: lean
+    attributes:
+      label: Lean version
+      description: Output of `lean --version`, if the failure is in the build.
+    validations:
+      required: false
